@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave & Bill Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <div class="header">
+            <h1>🏢 Leave & Bill Management System</h1>
+        </div>
+        
+        <div class="tab-nav">
+            <button id="login-tab" class="tab-button active">Login</button>
+            <button id="register-tab" class="tab-button">Register</button>
+        </div>
+        
+        <div id="login-form" class="tab-content active">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="login-email">Email:</label>
+                <input type="email" id="login-email" required />
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" required />
+                <button type="submit">Login</button>
+            </form>
+            <div class="test-accounts">
+                <p><strong>Test Accounts:</strong></p>
+                <ul>
+                    <li>Admin: admin@system.com / Admin@123</li>
+                    <li>Principal: principal@system.com / Principal@123</li>
+                    <li>HOD (Computer): comp_hod@system.com / HOD@123</li>
+                    <li>HOD (Accounts): acc_hod@system.com / HOD@123</li>
+                    <li>Employee (Computer): emp_comp@system.com / Emp@123</li>
+                    <li>TPO: tpo@system.com / TPO@123</li>
+                </ul>
+            </div>
+            <div id="login-error" class="error"></div>
+        </div>
+        
+        <div id="register-form" class="tab-content">
+            <h2>Register</h2>
+            <form id="registerForm">
+                <label for="reg-photo">Photo:</label>
+                <input type="file" id="reg-photo" accept="image/*" required />
+                
+                <label for="reg-name">Full Name:</label>
+                <input type="text" id="reg-name" required />
+                
+                <label for="reg-email">Email:</label>
+                <input type="email" id="reg-email" required />
+                
+                <label for="reg-dept">Department:</label>
+                <select id="reg-dept" required>
+                    <option value="">--Select Department--</option>
+                    <option>Accounts</option>
+                    <option>Administration</option>
+                    <option>AIDS</option>
+                    <option>Computer</option>
+                    <option>CSEDS</option>
+                    <option>TPO</option>
+                </select>
+                
+                <label for="reg-join">Joining Date:</label>
+                <input type="date" id="reg-join" required />
+                
+                <label for="reg-role">Role:</label>
+                <select id="reg-role" required>
+                    <option value="">--Select Role--</option>
+                    <option>Individual</option>
+                    <option>HOD</option>
+                    <option>Principal</option>
+                </select>
+                
+                <label for="reg-pass">Password:</label>
+                <input type="password" id="reg-pass" required />
+                
+                <label for="reg-cpass">Confirm Password:</label>
+                <input type="password" id="reg-cpass" required />
+                
+                <button type="submit">Register</button>
+            </form>
+            <div id="register-error" class="error"></div>
+            <div id="register-success" class="success"></div>
+        </div>
+
+        <div id="dashboard-container" style="display:none;">
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
