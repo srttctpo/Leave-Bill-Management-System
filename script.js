@@ -125,6 +125,7 @@ function showDashboard(user) {
     html += '<button class="action-btn" onclick="showApprovals()">⏳ Pending Approvals</button>';
       if (user.role === 'Admin') {
     html += '<button class="action-btn" onclick="manageUsers()">👥 Manage All Users</button>';
+            html += '<button class="action-btn" onclick="manageLeaveBalances()">📊 Manage Leave Balances</button>';
   }
   }
   html += '</div>';
@@ -309,6 +310,104 @@ function deleteUser(email) {
   alert('User ' + user.name + ' has been permanently deleted.');
   manageUsers();
 }
+
+// Admin: Manage Leave Balances
+function manageLeaveBalances() {
+  let currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
+  if (currentUser.role !== 'Admin') {
+    alert('Only administrators can manage leave balances.');
+    return;
+  }
+  
+  let allUsers = JSON.parse(localStorage.getItem('lbs-users')) || [];
+  let managementSection = document.getElementById('approval-section');
+  
+  let html = '<div class="approval-container"><h3>📊 Leave Balance Management (Admin Only)</h3>';
+  html += '<p style="color: #64748b; margin-bottom: 20px;">Manage leave balances for all users. Leave Types: CL (Casual Leave), OD (On Duty), CO (Compensatory Off), SL (Sick Leave), LWP (Leave Without Pay)</p>';
+  html += '<div style="margin-bottom:20px;"><button class="approve-btn" onclick="bulkAllocateLeaves()">🔄 Bulk Allocate Standard Leaves</button></div>';
+  html += '<div class="approval-list">';
+  
+  allUsers.forEach(u => {
+    if (!u.leaveBalance) u.leaveBalance = {CL:0,OD:0,CO:0,SL:0,LWP:0};
+    
+    html += '<div class="approval-card">';
+    html += '<div class="approval-info">';
+    html += '<h4>' + u.name + '</h4>';
+    html += '<p><strong>Email:</strong> ' + u.email + '</p>';
+    html += '<p><strong>Role:</strong> ' + u.role + ' | <strong>Department:</strong> ' + u.department + '</p>';
+    html += '<p style="margin-top:10px;"><strong>Leave Balances:</strong></p>';
+    html += '<p>CL: <span style="color:#10b981; font-weight:bold;">' + u.leaveBalance.CL + '</span> | ';
+    html += 'OD: <span style="color:#10b981; font-weight:bold;">' + u.leaveBalance.OD + '</span> | ';
+    html += 'CO: <span style="color:#10b981; font-weight:bold;">' + u.leaveBalance.CO + '</span> | ';
+    html += 'SL: <span style="color:#10b981; font-weight:bold;">' + u.leaveBalance.SL + '</span> | ';
+    html += 'LWP: <span style="color:#10b981; font-weight:bold;">' + u.leaveBalance.LWP + '</span></p>';
+    html += '</div>';
+    html += '<div class="approval-actions" style="flex-direction:column; gap:8px;">';
+    html += '<button class="action-btn" style="background:#3b82f6; padding:8px 16px; font-size:13px;" onclick="editUserLeave(\\'' + u.email + '\\')">✏️ Edit Leave Balance</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  
+  html += '</div></div>';
+  managementSection.innerHTML = html;
+}
+
+function editUserLeave(email) {
+  let allUsers = JSON.parse(localStorage.getItem('lbs-users')) || [];
+  let user = allUsers.find(u => u.email === email);
+  if (!user) return;
+  
+  if (!user.leaveBalance) user.leaveBalance = {CL:0,OD:0,CO:0,SL:0,LWP:0};
+  
+  let newCL = prompt('Edit leave balance for ' + user.name + '\n\nCasual Leave (CL) - Current: ' + user.leaveBalance.CL, user.leaveBalance.CL);
+  if (newCL === null) return;
+  
+  let newOD = prompt('On Duty (OD) - Current: ' + user.leaveBalance.OD, user.leaveBalance.OD);
+  if (newOD === null) return;
+  
+  let newCO = prompt('Compensatory Off (CO) - Current: ' + user.leaveBalance.CO, user.leaveBalance.CO);
+  if (newCO === null) return;
+  
+  let newSL = prompt('Sick Leave (SL) - Current: ' + user.leaveBalance.SL, user.leaveBalance.SL);
+  if (newSL === null) return;
+  
+  let newLWP = prompt('Leave Without Pay (LWP) - Current: ' + user.leaveBalance.LWP, user.leaveBalance.LWP);
+  if (newLWP === null) return;
+  
+  let userIndex = allUsers.findIndex(u => u.email === email);
+  allUsers[userIndex].leaveBalance = {
+    CL: parseInt(newCL) || 0,
+    OD: parseInt(newOD) || 0,
+    CO: parseInt(newCO) || 0,
+    SL: parseInt(newSL) || 0,
+    LWP: parseInt(newLWP) || 0
+  };
+  
+  localStorage.setItem('lbs-users', JSON.stringify(allUsers));
+  users = allUsers;
+  alert('Leave balance for ' + user.name + ' has been updated!');
+  manageLeaveBalances();
+}
+
+function bulkAllocateLeaves() {
+  if (!confirm('Allocate standard leaves to ALL users?\n\nCL: 12\nOD: 15\nCO: 10\nSL: 7\nLWP: 0\n\nThis will overwrite existing balances!')) return;
+  
+  let allUsers = JSON.parse(localStorage.getItem('lbs-users')) || [];
+  
+  allUsers.forEach(u => {
+    if (u.role !== 'Admin') {
+      u.leaveBalance = {CL:12, OD:15, CO:10, SL:7, LWP:0};
+    } else {
+      u.leaveBalance = {CL:0, OD:0, CO:0, SL:0, LWP:0};
+    }
+  });
+  
+  localStorage.setItem('lbs-users', JSON.stringify(allUsers));
+  users = allUsers;
+  alert('Standard leaves allocated to all users!');
+  manageLeaveBalances();
+}
+
 function logout() {
   localStorage.removeItem('lbs-current-user');
   window.location.reload();
