@@ -17,8 +17,7 @@ body {
     background: white;
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        overflow: visible;
-        min-height: 400px;
+    overflow: hidden;        min-height: 400px;
 }
 
 .header {
