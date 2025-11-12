@@ -80,8 +80,10 @@ document.getElementById('registerForm').onsubmit = function(e) {
 
 // Show Dashboard
 function showDashboard(user) {
-    document.getElementById('app').style.display = 'none';
-    let dash = document.getElementById('dashboard-container');
+    document.getElementById('login-form').style.display = 'none';    let dash = document.getElementById('dashboard-container');
+        document.getElementById('register-form').style.display = 'none';
+        document.querySelector('.tab-nav').style.display = 'none';
+        document.querySelector('.header').style.display = 'none';
     dash.style.display = 'block';
     
     let html = '<div class="dashboard-header">';
