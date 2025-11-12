@@ -360,4 +360,109 @@ form button:hover {
     .action-btn {
         width: 100%;
     }
+
+    
+/* Approval Section Styles */
+.approval-container {
+  margin-top: 30px;
+  padding: 25px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border-left: 4px solid #667eea;
+}
+
+.approval-container h3 {
+  color: #1e293b;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+.approval-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.approval-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.approval-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+.approval-info h4 {
+  color: #1e293b;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.approval-info p {
+  color: #64748b;
+  margin: 5px 0;
+  font-size: 0.95em;
+}
+
+.approval-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.approve-btn,
+.reject-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.approve-btn {
+  background: #10b981;
+  color: white;
+}
+
+.approve-btn:hover {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.reject-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.reject-btn:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+@media (max-width: 768px) {
+  .approval-card {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .approval-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .approve-btn,
+  .reject-btn {
+    flex: 1;
+  }
 }
