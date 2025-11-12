@@ -118,7 +118,8 @@ function showDashboard(user) {
   html += '<div class="action-buttons">';
   if (user.role !== 'Admin') {
     html += '<button class="action-btn" onclick="alert(\'Feature: Raise a Bill\\nComing Soon!\');">📄 Raise Bill</button>';
-    html += '<button class="action-btn" onclick="alert(\'Feature: Apply for Leave\\nComing Soon!\');">🏖️ Apply Leave</button>';
+            html += '<button class="action-btn" onclick="applyLeave()">🏝️ Apply Leave</button>';
+        html += '<button class="action-btn" onclick="showLeaveHistory()">📊 Leave History</button>';
   }
   html += '<button class="action-btn" onclick="alert(\'Feature: View History\\nComing Soon!\');">📊 View History</button>';
   if (user.role === 'Admin' || user.role === 'Principal' || user.role === 'HOD') {
@@ -162,11 +163,14 @@ function showApprovals() {
     // HOD approves Individuals in their department
     pendingUsers = allUsers.filter(u => u.status === 'pending' && u.role === 'Individual' && u.department === currentUser.department);
   }
+
+      // Get pending leave approvals
+    let leaveApps = getLeaveApplications();
+    let pendingLeaves = leaveApps.filter(l => l.status === 'pending' && l.approver === currentUser.email);
   
   let approvalSection = document.getElementById('approval-section');
   
-  if (pendingUsers.length === 0) {
-    approvalSection.innerHTML = '<div class="approval-container"><h3>⏳ Pending Approvals</h3><p>No pending approvals at this time.</p></div>';
+    if (pendingUsers.length === 0 && pendingLeaves.length === 0) {            approvalSection.innerHTML = '<div class="approval-container"><h3>⏳ Pending Approvals</h3><p>No pending user or leave approvals.</p></div>';
     return;
   }
   
@@ -188,6 +192,21 @@ function showApprovals() {
     html += '</div>';
     html += '</div>';
   });
+
+    
+    pendingLeaves.forEach(leave => {
+        html += '<div class="approval-card"><div class="approval-info">';
+        html += '<h4>' + leave.applicantName + ' <span style="background:#f59e0b;color:white;padding:2px 8px;border-radius:4px;font-size:0.8em;">LEAVE: ' + leave.leaveType + '</span></h4>';
+        html += '<p><strong>ID:</strong> ' + leave.id + '</p>';
+        html += '<p><strong>Department:</strong> ' + leave.applicantDepartment + ' | <strong>Role:</strong> ' + leave.applicantRole + '</p>';
+        html += '<p><strong>Duration:</strong> ' + leave.fromDate + ' to ' + leave.toDate + ' (' + leave.days + ' days)</p>';
+        html += '<p><strong>Reason:</strong> ' + leave.reason + '</p>';
+        html += '</div><div class="approval-actions" style="flex-direction:column;gap:8px;">';
+        html += '<button class="approve-btn" onclick="approveLeave(\'' + leave.id + '\')" style="padding:8px;">✅ Approve</button>';
+        html += '<button class="reject-btn" onclick="rejectLeave(\'' + leave.id + '\')" style="padding:8px;">❌ Reject</button>';
+        html += '<button class="action-btn" onclick="returnLeave(\'' + leave.id + '\')" style="background:#f59e0b;padding:8px;">↩ Return</button>';
+        html += '</div></div>';
+    });
   
   html += '</div></div>';
   approvalSection.innerHTML = html;
