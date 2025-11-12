@@ -70,6 +70,21 @@ document.getElementById('registerForm').onsubmit = function(e) {
     errElem.textContent = 'Email already registered!';
     return;
   }
+    
+  // Check if department already has a HOD
+  if (role === 'HOD') {
+    let existingHOD = users.find(u => u.role === 'HOD' && u.department === department && u.status === 'approved');
+    if (existingHOD) {
+      errElem.textContent = 'This department already has a HOD: ' + existingHOD.name + '. Each department can have only one HOD.';
+      return;
+    }
+    // Also check pending HOD registrations
+    let pendingHOD = users.find(u => u.role === 'HOD' && u.department === department && u.status === 'pending');
+    if (pendingHOD) {
+      errElem.textContent = 'A HOD registration for this department is already pending approval.';
+      return;
+    }
+  }
   
   users.push({ email, pass, role, department, name, joinDate:join, status:'pending' });
   localStorage.setItem('lbs-users', JSON.stringify(users));
@@ -108,6 +123,9 @@ function showDashboard(user) {
   html += '<button class="action-btn" onclick="alert(\'Feature: View History\\nComing Soon!\');">📊 View History</button>';
   if (user.role === 'Admin' || user.role === 'Principal' || user.role === 'HOD') {
     html += '<button class="action-btn" onclick="showApprovals()">⏳ Pending Approvals</button>';
+      if (user.role === 'Admin') {
+    html += '<button class="action-btn" onclick="manageUsers()">👥 Manage All Users</button>';
+  }
   }
   html += '</div>';
   
@@ -203,6 +221,94 @@ function rejectUser(email) {
   }
 }
 
+
+
+// Admin: Manage all users
+function manageUsers() {
+  let currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
+  if (currentUser.role !== 'Admin') {
+    alert('Only administrators can access user management.');
+    return;
+  }
+  
+  let allUsers = JSON.parse(localStorage.getItem('lbs-users')) || [];
+  let managementSection = document.getElementById('approval-section');
+  
+  let html = '<div class="approval-container"><h3>👥 User Management (Admin Only)</h3>';
+  html += '<p style="color: #64748b; margin-bottom: 20px;">As an administrator, you can view, edit, and delete any user account.</p>';
+  html += '<div class="approval-list">';
+  
+  allUsers.forEach(u => {
+    if (u.email === currentUser.email) return; // Don't show current admin
+    
+    html += '<div class="approval-card">';
+    html += '<div class="approval-info">';
+    html += '<h4>' + u.name + ' <span style="font-size:0.8em; color:' + (u.status === 'approved' ? '#10b981' : '#f59e0b') + ';">(' + u.status + ')</span></h4>';
+    html += '<p><strong>Email:</strong> ' + u.email + '</p>';
+    html += '<p><strong>Role:</strong> ' + u.role + '</p>';
+    html += '<p><strong>Department:</strong> ' + u.department + '</p>';
+    html += '<p><strong>Join Date:</strong> ' + u.joinDate + '</p>';
+    html += '</div>';
+    html += '<div class="approval-actions" style="flex-direction:column; gap:8px;">';
+    html += '<button class="action-btn" style="background:#3b82f6; padding:8px 16px; font-size:13px;" onclick="editUser(\\'' + u.email + '\\')">✏️ Edit</button>';
+    html += '<button class="reject-btn" style="padding:8px 16px; font-size:13px;" onclick="deleteUser(\\'' + u.email + '\\')">🗑️ Delete</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  
+  html += '</div></div>';
+  managementSection.innerHTML = html;
+}
+
+function editUser(email) {
+  let allUsers = JSON.parse(localStorage.getItem('lbs-users')) || [];
+  let user = allUsers.find(u => u.email === email);
+  if (!user) return;
+  
+  let newRole = prompt('Change role for ' + user.name + ' (current: ' + user.role + ')\n\nEnter new role:\n- Individual\n- HOD\n- Principal\n- Admin', user.role);
+  if (!newRole) return;
+  
+  if (!['Individual', 'HOD', 'Principal', 'Admin'].includes(newRole)) {
+    alert('Invalid role! Must be: Individual, HOD, Principal, or Admin');
+    return;
+  }
+  
+  // Check HOD uniqueness if changing to HOD
+  if (newRole === 'HOD') {
+    let existingHOD = allUsers.find(u => u.role === 'HOD' && u.department === user.department && u.email !== email && u.status === 'approved');
+    if (existingHOD) {
+      alert('Cannot change role: ' + user.department + ' department already has a HOD: ' + existingHOD.name);
+      return;
+    }
+  }
+  
+  let userIndex = allUsers.findIndex(u => u.email === email);
+  allUsers[userIndex].role = newRole;
+  
+  let newStatus = prompt('Change status for ' + user.name + ' (current: ' + user.status + ')\n\nEnter new status:\n- pending\n- approved', allUsers[userIndex].status);
+  if (newStatus && ['pending', 'approved'].includes(newStatus)) {
+    allUsers[userIndex].status = newStatus;
+  }
+  
+  localStorage.setItem('lbs-users', JSON.stringify(allUsers));
+  users = allUsers;
+  alert('User ' + user.name + ' has been updated!');
+  manageUsers();
+}
+
+function deleteUser(email) {
+  if (!confirm('Are you sure you want to permanently delete this user?\n\nThis action cannot be undone!')) return;
+  
+  let allUsers = JSON.parse(localStorage.getItem('lbs-users')) || [];
+  let user = allUsers.find(u => u.email === email);
+  if (!user) return;
+  
+  allUsers = allUsers.filter(u => u.email !== email);
+  localStorage.setItem('lbs-users', JSON.stringify(allUsers));
+  users = allUsers;
+  alert('User ' + user.name + ' has been permanently deleted.');
+  manageUsers();
+}
 function logout() {
   localStorage.removeItem('lbs-current-user');
   window.location.reload();
