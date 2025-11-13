@@ -112,7 +112,7 @@
     <script src="errors.js"></script>
     <script>
         // Check if user is logged in
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
         if (!currentUser) {
             window.location.href = 'index.html';
         }
@@ -141,7 +141,7 @@
         }
 
         function logout() {
-            localStorage.removeItem('currentUser');
+            localStorage.removeItem('lbs-current-user');
             window.location.href = 'index.html';
         }
     </script>
