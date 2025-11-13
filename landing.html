@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Selection - Leave & Bill Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .landing-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .landing-title {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .systems-container {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .system-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 300px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .system-box:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+        }
+
+        .system-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .system-label {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .system-description {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    
+    <div class="landing-container">
+        <h1 class="landing-title" id="landingTitle"></h1>
+        
+        <div class="systems-container">
+            <div class="system-box" onclick="loadLMS()">
+                <div class="system-icon">📋</div>
+                <div class="system-label" id="lmsLabel"></div>
+                <div class="system-description" id="lmsDescription"></div>
+            </div>
+            
+            <div class="system-box" onclick="showBMSComingSoon()">
+                <div class="system-icon">💰</div>
+                <div class="system-label" id="bmsLabel"></div>
+                <div class="system-description" id="bmsDescription"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="messages.js"></script>
+    <script src="errors.js"></script>
+    <script>
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'index.html';
+        }
+
+        // Load text from messages.js
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('landingTitle').textContent = MESSAGES.LANDING_PAGE.TITLE;
+            document.getElementById('lmsLabel').textContent = MESSAGES.LANDING_PAGE.LMS_LABEL;
+            document.getElementById('lmsDescription').textContent = MESSAGES.LANDING_PAGE.LMS_DESCRIPTION;
+            document.getElementById('bmsLabel').textContent = MESSAGES.LANDING_PAGE.BMS_LABEL;
+            document.getElementById('bmsDescription').textContent = MESSAGES.LANDING_PAGE.BMS_DESCRIPTION;
+        });
+
+        function loadLMS() {
+            // Redirect to main dashboard
+            window.location.href = 'index.html?showDashboard=true';
+        }
+
+        function showBMSComingSoon() {
+            // Show coming soon dialog
+            ErrorHandler.show(
+                MESSAGES.LANDING_PAGE.COMING_SOON,
+                MESSAGES.LANDING_PAGE.COMING_SOON_MESSAGE,
+                'success'
+            );
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
