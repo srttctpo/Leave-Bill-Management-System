@@ -12,6 +12,15 @@ localStorage.setItem('lbs-users', JSON.stringify(users));
 // NOTE: Login and Registration logic has been moved to login.js
 // This file contains only dashboard and management functions
 
+// Check if returning from landing page with showDashboard parameter
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('showDashboard') === 'true') {
+    const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
+    if (currentUser) {
+        showDashboard(currentUser);
+    }
+}
+
 
 // Show Dashboard
 function showDashboard(user) {
