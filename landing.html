@@ -108,22 +108,24 @@
         </div>
     </div>
 
-    <script src="messages.js"></script>
+    <script src="strings.js"></script>
     <script src="errors.js"></script>
+        <script src="dialog.js"></script>
     <script>
         // Check if user is logged in
         const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
         if (!currentUser) {
+            
             window.location.href = 'index.html';
         }
 
-        // Load text from messages.js
+        // Load text from strings.js
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('landingTitle').textContent = MESSAGES.LANDING_PAGE.TITLE;
-            document.getElementById('lmsLabel').textContent = MESSAGES.LANDING_PAGE.LMS_LABEL;
-            document.getElementById('lmsDescription').textContent = MESSAGES.LANDING_PAGE.LMS_DESCRIPTION;
-            document.getElementById('bmsLabel').textContent = MESSAGES.LANDING_PAGE.BMS_LABEL;
-            document.getElementById('bmsDescription').textContent = MESSAGES.LANDING_PAGE.BMS_DESCRIPTION;
+            document.getElementById('landingTitle').textContent = STRINGS.LANDING_PAGE.TITLE;
+            document.getElementById('lmsLabel').textContent = STRINGS.LANDING_PAGE.LMS_LABEL;
+            document.getElementById('lmsDescription').textContent = STRINGS.LANDING_PAGE.LMS_DESCRIPTION;
+            document.getElementById('bmsLabel').textContent = STRINGS.LANDING_PAGE.BMS_LABEL;
+            document.getElementById('bmsDescription').textContent = STRINGS.LANDING_PAGE.BMS_DESCRIPTION;
         });
 
         function loadLMS() {
@@ -133,12 +135,7 @@
 
         function showBMSComingSoon() {
             // Show coming soon dialog
-            ErrorHandler.show(
-                MESSAGES.LANDING_PAGE.COMING_SOON,
-                MESSAGES.LANDING_PAGE.COMING_SOON_MESSAGE,
-                'success'
-            );
-        }
+        Dialog.showComingSoon();
 
         function logout() {
             localStorage.removeItem('lbs-current-user');
