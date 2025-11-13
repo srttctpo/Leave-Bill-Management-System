@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Dashboard - Leave Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .card-description {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .logout-btn {
+            background: white;
+            color: #764ba2;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .logout-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <div>
+                    <h1 id="welcomeMessage">Welcome!</h1>
+                    <p><span class="role-badge" id="userRole"></span> | <span id="userDepartment"></span></p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-cards" id="dashboardCards">
+            <!-- Cards will be loaded dynamically based on role -->
+        </div>
+    </div>
+
+    <script src="strings.js"></script>
+    <script>
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
+        
+        if (!currentUser) {
+            // Not logged in, redirect to login
+            window.location.href = 'index.html';
+        } else {
+            // Load dashboard based on role
+            loadDashboard(currentUser);
+        }
+        
+        function loadDashboard(user) {
+            // Set welcome message
+            document.getElementById('welcomeMessage').textContent = `Welcome, ${user.name}!`;
+            document.getElementById('userRole').textContent = user.role;
+            document.getElementById('userDepartment').textContent = user.department;
+            
+            // Load role-specific cards
+            const cardsContainer = document.getElementById('dashboardCards');
+            const cards = getCardsForRole(user.role);
+            
+            cards.forEach(card => {
+                const cardElement = createCard(card);
+                cardsContainer.appendChild(cardElement);
+            });
+        }
+        
+        function getCardsForRole(role) {
+            const commonCards = [
+                {
+                    icon: '📝',
+                    title: 'Apply Leave',
+                    description: 'Submit a new leave application',
+                    action: 'applyLeave'
+                },
+                {
+                    icon: '📊',
+                    title: 'My Leaves',
+                    description: 'View your leave history and status',
+                    action: 'viewMyLeaves'
+                },
+                {
+                    icon: '📅',
+                    title: 'Leave Balance',
+                    description: 'Check your remaining leave balance',
+                    action: 'viewBalance'
+                }
+            ];
+            
+            const approverCards = [
+                {
+                    icon: '✅',
+                    title: 'Approve Leaves',
+                    description: 'Review and approve pending leave requests',
+                    action: 'approveLeaves'
+                },
+                {
+                    icon: '👥',
+                    title: 'Team Leaves',
+                    description: 'View team leave calendar',
+                    action: 'viewTeamLeaves'
+                }
+            ];
+            
+            const adminCards = [
+                {
+                    icon: '⚙️',
+                    title: 'User Management',
+                    description: 'Approve registrations and manage users',
+                    action: 'manageUsers'
+                },
+                {
+                    icon: '📈',
+                    title: 'Reports',
+                    description: 'Generate leave reports and analytics',
+                    action: 'viewReports'
+                }
+            ];
+            
+            // Return cards based on role
+            if (role === 'Admin') {
+                return [...commonCards, ...approverCards, ...adminCards];
+            } else if (role === 'Principal') {
+                return [...commonCards, ...approverCards];
+            } else if (role === 'HOD') {
+                return [...commonCards, ...approverCards];
+            } else {
+                return commonCards;
+            }
+        }
+        
+        function createCard(card) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'dashboard-card';
+            cardDiv.onclick = () => handleCardClick(card.action);
+            
+            cardDiv.innerHTML = `
+                <div class="card-icon">${card.icon}</div>
+                <div class="card-title">${card.title}</div>
+                <div class="card-description">${card.description}</div>
+            `;
+            
+            return cardDiv;
+        }
+        
+        function handleCardClick(action) {
+            switch(action) {
+                case 'applyLeave':
+                    showComingSoon('Leave Application');
+                    break;
+                case 'viewMyLeaves':
+                    showComingSoon('My Leaves');
+                    break;
+                case 'viewBalance':
+                    showComingSoon('Leave Balance');
+                    break;
+                case 'approveLeaves':
+                    showComingSoon('Approve Leaves');
+                    break;
+                case 'viewTeamLeaves':
+                    showComingSoon('Team Calendar');
+                    break;
+                case 'manageUsers':
+                    showComingSoon('User Management');
+                    break;
+                case 'viewReports':
+                    showComingSoon('Reports');
+                    break;
+                default:
+                    showComingSoon('Feature');
+            }
+        }
+        
+        function showComingSoon(feature) {
+            alert(`${feature} - Coming Soon!\n\nThis feature is currently under development.`);
+        }
+        
+        function logout() {
+            localStorage.removeItem('lbs-current-user');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
