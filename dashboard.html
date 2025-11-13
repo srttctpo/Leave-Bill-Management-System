@@ -105,6 +105,8 @@
     </div>
 
     <script src="strings.js"></script>
+        <script src="dialog.js"></script>
+        <script src="notifications.js"></script>
     <script>
         // Check if user is logged in
         const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
@@ -240,7 +242,7 @@
         }
         
         function showComingSoon(feature) {
-            alert(`${feature} - Coming Soon!\n\nThis feature is currently under development.`);
+                    Dialog.show(`${feature} - Coming Soon!\n\nThis feature is currently under development.`);
         }
         
         function logout() {
