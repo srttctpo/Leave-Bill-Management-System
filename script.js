@@ -10,6 +10,7 @@ let users = JSON.parse(localStorage.getItem('lbs-users')) || [
 localStorage.setItem('lbs-users', JSON.stringify(users));
 
 // Tab switching
+document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('login-tab').onclick = function() {
   document.getElementById('login-tab').classList.add('active');
   document.getElementById('register-tab').classList.remove('active');
@@ -92,6 +93,7 @@ document.getElementById('registerForm').onsubmit = function(e) {
   setTimeout(() => succElem.textContent = '', 4000);
   document.getElementById('registerForm').reset();
 };
+  });
 
 // Show Dashboard
 function showDashboard(user) {
