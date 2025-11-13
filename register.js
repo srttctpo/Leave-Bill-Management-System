@@ -12,11 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let pass = document.getElementById('reg-pass').value.trim();
         let cpass = document.getElementById('reg-cpass').value.trim();
         
-        let errElem = document.getElementById('register-error');
-        let succElem = document.getElementById('register-success');
-        
-        errElem.textContent = '';
-        succElem.textContent = '';
         
         // Validation
         if (!name || !email || !department || !join || !role || !pass || !cpass) {
@@ -66,9 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         localStorage.setItem('lbs-users', JSON.stringify(users));
         
-        succElem.textContent = 'Registered successfully! Awaiting approval.';
-        setTimeout(() => succElem.textContent = '', 4000);
-        
+        // Show success notification with approval workflow
+        Notifications.registrationSuccess(name, role, department);        
         document.getElementById('registerForm').reset();
     };
 });
