@@ -32,6 +32,13 @@ body {
     font-weight: 600;
 }
 
+.college-logo {
+    height: 50px;
+    width: auto;
+    margin-right: 15px;
+    vertical-align: middle;
+}
+
 .tab-nav {
     display: flex;
     background: #f5f7fa;
