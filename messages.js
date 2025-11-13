@@ -78,6 +78,17 @@ const MESSAGES = {
         DEPARTMENT_HAS_HOD: 'This department already has a HOD: {name}. Each department can have only one HOD.',
         PENDING_HOD_APPROVAL: 'A HOD registration for this department is already pending approval.'
     }
+
+        // Landing page text
+        LANDING_PAGE: {
+            TITLE: 'Choose Your System',
+                        LMS_LABEL: 'Leave Management System (LMS)',
+                        LMS_DESCRIPTION: 'Manage leave requests, approvals, and balances',
+                        BMS_LABEL: 'Bill Management System (BMS)',
+                        BMS_DESCRIPTION: 'Track and manage bills and expenses',
+                        COMING_SOON: 'Coming Soon',
+                        COMING_SOON_MESSAGE: 'The Bill Management System is currently under development. Stay tuned for updates!'
+        }
 };
 
 // Export for use in other files
