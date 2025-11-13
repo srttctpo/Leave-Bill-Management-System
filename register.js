@@ -15,12 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Validation
         if (!name || !email || !department || !join || !role || !pass || !cpass) {
-            errElem.textContent = 'All fields are required.';
+            Dialog.show(STRINGS.NOTIFICATIONS.REGISTRATION_ERROR_TITLE, STRINGS.ERRORS.ALL_FIELDS_REQUIRED, 'error');
             return;
         }
         
         if (pass !== cpass) {
-            errElem.textContent = 'Passwords do not match!';
+            Dialog.show(STRINGS.NOTIFICATIONS.REGISTRATION_ERROR_TITLE, STRINGS.ERRORS.PASSWORD_MISMATCH, 'error');
             return;
         }
         
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let users = JSON.parse(localStorage.getItem('lbs-users')) || [];
         
         if (users.some(u => u.email === email)) {
-            errElem.textContent = 'Email already registered!';
+            Dialog.show(STRINGS.NOTIFICATIONS.REGISTRATION_ERROR_TITLE, STRINGS.ERRORS.EMAIL_ALREADY_REGISTERED, 'error');
             return;
         }
         
@@ -36,15 +36,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (role === 'HOD') {
             let existingHOD = users.find(u => u.role === 'HOD' && u.department === department && u.status === 'approved');
             if (existingHOD) {
-                errElem.textContent = 'This department already has a HOD: ' + existingHOD.name + '. Each department can have only one HOD.';
+                Dialog.show(STRINGS.NOTIFICATIONS.REGISTRATION_ERROR_TITLE, STRINGS.ERRORS.DEPARTMENT_HAS_HOD.replace('{name}', existingHOD.name), 'error');
                 return;
             }
             
             // Also check pending HOD registrations
             let pendingHOD = users.find(u => u.role === 'HOD' && u.department === department && u.status === 'pending');
             if (pendingHOD) {
-                errElem.textContent = 'A HOD registration for this department is already pending approval.';
-                return;
+            Dialog.show(STRINGS.NOTIFICATIONS.REGISTRATION_ERROR_TITLE, STRINGS.ERRORS.PENDING_HOD_APPROVAL, 'error');                return;
             }
         }
         
