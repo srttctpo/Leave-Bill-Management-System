@@ -48,10 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('lbs-current-user', JSON.stringify(user));
             errElem.textContent = '';
             
-            // Call showDashboard if it exists (defined in script.js)
-            if (typeof showDashboard === 'function') {
-                showDashboard(user);
-            }
+            // Redirect to landing page
+            window.location.href = 'landing.html';
         };
     }
     
