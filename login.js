@@ -38,15 +38,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const pass = document.getElementById('login-password').value.trim();
             const users = JSON.parse(localStorage.getItem('lbs-users')) || [];
             const user = users.find(u => u.email === email && u.pass === pass && u.status === 'approved');
-            const errElem = document.getElementById('login-error');
             
             if (!user) {
-                errElem.textContent = 'Invalid credentials or account not approved!';
+                Dialog.show(STRINGS.NOTIFICATIONS.LOGIN_ERROR_TITLE, STRINGS.ERRORS.INVALID_CREDENTIALS, 'error');
                 return;
             }
             
             localStorage.setItem('lbs-current-user', JSON.stringify(user));
-            errElem.textContent = '';
             
             // Redirect to landing page
             window.location.href = 'landing.html';
