@@ -87,6 +87,18 @@ const MESSAGES = {
         EMAIL_ALREADY_REGISTERED: 'Email already registered!',
         DEPARTMENT_HAS_HOD: 'This department already has a HOD: {name}. Each department can have only one HOD.',
         PENDING_HOD_APPROVAL: 'A HOD registration for this department is already pending approval.'
+            },
+
+    // Notification messages
+    NOTIFICATIONS: {
+        REGISTRATION_SUCCESS_TITLE: 'Registration Submitted Successfully!',
+        REGISTRATION_PENDING_INDIVIDUAL: 'Your registration has been sent to the HOD of {department} department for approval.',
+        REGISTRATION_PENDING_HOD: 'Your registration has been sent to the Principal for approval.',
+        REGISTRATION_PENDING_PRINCIPAL: 'Your registration has been sent to the System Administrator for approval.',
+        WAIT_FOR_APPROVAL: 'Please wait until your account is approved before attempting to login.',
+        CHECK_EMAIL: 'You will receive an email notification once your account is approved.',
+        LOGIN_ERROR_TITLE: 'Login Failed',
+        REGISTRATION_ERROR_TITLE: 'Registration Error'
     }
 
         // Landing page text
