@@ -9,91 +9,9 @@ let users = JSON.parse(localStorage.getItem('lbs-users')) || [
 ];
 localStorage.setItem('lbs-users', JSON.stringify(users));
 
-// Tab switching
-document.addEventListener('DOMContentLoaded', function() {
-document.getElementById('login-tab').onclick = function() {
-  document.getElementById('login-tab').classList.add('active');
-  document.getElementById('register-tab').classList.remove('active');
-  document.getElementById('login-form').classList.add('active');
-  document.getElementById('register-form').classList.remove('active');
-};
+// NOTE: Login and Registration logic has been moved to login.js
+// This file contains only dashboard and management functions
 
-document.getElementById('register-tab').onclick = function() {
-  document.getElementById('register-tab').classList.add('active');
-  document.getElementById('login-tab').classList.remove('active');
-  document.getElementById('register-form').classList.add('active');
-  document.getElementById('login-form').classList.remove('active');
-};
-
-// Login
-document.getElementById('loginForm').onsubmit = function(e) {
-  e.preventDefault();
-  let email = document.getElementById('login-email').value.trim();
-  let pass = document.getElementById('login-password').value.trim();
-  let user = users.find(u => u.email === email && u.pass === pass && u.status === 'approved');
-  let errElem = document.getElementById('login-error');
-  
-  if (!user) {
-    errElem.textContent = 'Invalid credentials or account not approved!';
-    return;
-  }
-  
-  localStorage.setItem('lbs-current-user', JSON.stringify(user));
-  errElem.textContent = '';
-  showDashboard(user);
-};
-
-// Register
-document.getElementById('registerForm').onsubmit = function(e) {
-  e.preventDefault();
-  let name = document.getElementById('reg-name').value.trim();
-  let email = document.getElementById('reg-email').value.trim();
-  let department = document.getElementById('reg-dept').value;
-  let join = document.getElementById('reg-join').value;
-  let role = document.getElementById('reg-role').value;
-  let pass = document.getElementById('reg-pass').value.trim();
-  let cpass = document.getElementById('reg-cpass').value.trim();
-  let errElem = document.getElementById('register-error');
-  let succElem = document.getElementById('register-success');
-  
-  errElem.textContent = '';
-  succElem.textContent = '';
-  
-  if (!name || !email || !department || !join || !role || !pass || !cpass) {
-    errElem.textContent = 'All fields are required.';
-    return;
-  }
-  if (pass !== cpass) {
-    errElem.textContent = 'Passwords do not match!';
-    return;
-  }
-  if (users.some(u => u.email === email)) {
-    errElem.textContent = 'Email already registered!';
-    return;
-  }
-    
-  // Check if department already has a HOD
-  if (role === 'HOD') {
-    let existingHOD = users.find(u => u.role === 'HOD' && u.department === department && u.status === 'approved');
-    if (existingHOD) {
-      errElem.textContent = 'This department already has a HOD: ' + existingHOD.name + '. Each department can have only one HOD.';
-      return;
-    }
-    // Also check pending HOD registrations
-    let pendingHOD = users.find(u => u.role === 'HOD' && u.department === department && u.status === 'pending');
-    if (pendingHOD) {
-      errElem.textContent = 'A HOD registration for this department is already pending approval.';
-      return;
-    }
-  }
-  
-  users.push({ email, pass, role, department, name, joinDate:join, status:'pending' });
-  localStorage.setItem('lbs-users', JSON.stringify(users));
-  succElem.textContent = 'Registered successfully! Awaiting approval.';
-  setTimeout(() => succElem.textContent = '', 4000);
-  document.getElementById('registerForm').reset();
-};
-  });
 
 // Show Dashboard
 function showDashboard(user) {
