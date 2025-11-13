@@ -21,6 +21,16 @@ const MESSAGES = {
         LOGOUT: 'Logout'
     },
     
+    // College and Application Info
+    APP_INFO: {
+        COLLEGE_NAME: 'SRTTC',
+        COLLEGE_FULL_NAME: 'Sundar Ramasamy Tulasiani Technical Campus',
+        LOCATION: 'Khamshet',
+        TAGLINE: 'Faculty of Engineering',
+        APP_TITLE: 'Leave & Bill Management System',
+        FULL_TITLE: 'SRTTC, Khamshet - Leave & Bill Management System'
+    },
+
     // Headings
     HEADINGS: {
         LOGIN: 'Login',
