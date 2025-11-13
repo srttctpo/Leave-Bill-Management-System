@@ -1,7 +1,7 @@
 // Centralized messages and text content for the application
 // All text strings used across login and register pages
 
-const MESSAGES = {
+const STRINGS = {
     // Common labels and buttons
     LABELS: {
         EMAIL: 'Email:',
@@ -115,5 +115,5 @@ const MESSAGES = {
 
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = MESSAGES;
+    module.exports = STRINGS;
 }
