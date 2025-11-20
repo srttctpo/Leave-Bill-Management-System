@@ -283,7 +283,22 @@ showLeaveCount(); break;                case 'approveLeaves':
 		
 		function showLeavesTakenAcademicYear() {
 			const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
-										    
+
+
+		    function getAcademicYearLeaveHistory(email, role, department) {
+        // Return sample data structure
+        return {
+            academicYear: '2024-2025',
+            summary: {
+                'CL': { applied: 0, approved: 0, pending: 0, rejected: 0 },
+                'SL': { applied: 0, approved: 0, pending: 0, rejected: 0 },
+                'OD': { applied: 0, approved: 0, pending: 0, rejected: 0 },
+                'CO': { applied: 0, approved: 0, pending: 0, rejected: 0 },
+                'LWP': { applied: 0, approved: 0, pending: 0, rejected: 0 }
+            }
+        };
+    }
+
 			if (!currentUser) { alert('Please login first!'); return; }
 			const historyData = getAcademicYearLeaveHistory(currentUser.email, currentUser.role, currentUser.department);
 			const approvalSection = document.getElementById('approval-section');
