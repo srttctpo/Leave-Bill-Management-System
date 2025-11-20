@@ -306,27 +306,47 @@ showLeaveCount(); break;                case 'approveLeaves':
 
 			function showLeaveBalance() {
 				const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
-				if (!currentUser) { alert('Please login first!'); return; }
-				const approvalSection = document.getElementById('approval-section');
-				const user = JSON.parse(localStorage.getItem('lbs-users')).find(u => u.email === currentUser.email);
-				let html = '<div style="max-width: 1000px; margin: 20px 0; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">';
-				html += '<h3 style="color: #1e40af; margin-bottom: 20px;">\ud83d\udccb Leave Balance</h3>';
-				html += '<div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">';
-				const leaveTypes = ['CL', 'SL', 'OD', 'CO', 'LWP'];
-				leaveTypes.forEach(type => {
-					const total = (user && user.leaveBalance && user.leaveBalance[type]) || 0;
-					const used = (user && user.leaveUsed && user.leaveUsed[type]) || 0;
-					const pending = (user && user.leavePending && user.leavePending[type]) || 0;
-					const available = Math.max(0, total - used - pending);
-					let color = '#3b82f6'; if (type === 'LWP') color = '#dc2626';
-					html += `<div style=\"padding: 12px 16px; background: #f9fafb; border: 2px solid ${color}; border-radius: 6px; font-size: 14px; font-weight: 500;\">`;
-					html += `<span style=\"color: ${color}; font-weight: bold;\">${type}:</span> <strong>${available}</strong> available`;
-					html += `</div>`;
-					});
-				html += '</div></div>';
-				approvalSection.innerHTML = html;
-				}
-		}
+            if (!currentUser) { alert('Please login first!'); return; }
+            const approvalSection = document.getElementById('approval-section');
+            
+            // Sample leave history data
+            const leaveHistory = [
+                { id: 1, type: 'CL', days: 2, from: '2024-11-05', to: '2024-11-06', reason: 'Personal work', status: 'Approved', appliedOn: '2024-11-01' },
+                { id: 2, type: 'SL', days: 1, from: '2024-11-12', to: '2024-11-12', reason: 'Medical checkup', status: 'Approved', appliedOn: '2024-11-10' },
+                { id: 3, type: 'CL', days: 3, from: '2024-11-20', to: '2024-11-22', reason: 'Family function', status: 'Pending', appliedOn: '2024-11-18' },
+                { id: 4, type: 'OD', days: 1, from: '2024-11-25', to: '2024-11-25', reason: 'Workshop attendance', status: 'Pending', appliedOn: '2024-11-19' },
+                { id: 5, type: 'SL', days: 2, from: '2024-10-15', to: '2024-10-16', reason: 'Fever', status: 'Approved', appliedOn: '2024-10-14' }
+            ];
+            
+            let html = '<div style="max-width: 900px; margin: 20px 0; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">';
+            html += '<h3 style="color: #1e40af; margin-bottom: 20px;">📋 My Leave History</h3>';
+            html += '<table style="width: 100%; border-collapse: collapse; font-size: 13px;">';
+            html += '<thead><tr style="background: #f1f5f9; border-bottom: 2px solid #e2e8f0;">';
+            html += '<th style="padding: 12px; text-align: left;">Type</th>';
+            html += '<th style="padding: 12px; text-align: left;">Days</th>';
+            html += '<th style="padding: 12px; text-align: left;">From</th>';
+            html += '<th style="padding: 12px; text-align: left;">To</th>';
+            html += '<th style="padding: 12px; text-align: left;">Reason</th>';
+            html += '<th style="padding: 12px; text-align: left;">Applied On</th>';
+            html += '<th style="padding: 12px; text-align: center;">Status</th>';
+            html += '</tr></thead><tbody>';
+            
+            leaveHistory.forEach(leave => {
+                const statusColor = leave.status === 'Approved' ? '#059669' : leave.status === 'Pending' ? '#f59e0b' : '#dc2626';
+                const statusBg = leave.status === 'Approved' ? '#d1fae5' : leave.status === 'Pending' ? '#fef3c7' : '#fee2e2';
+                html += `<tr style="border-bottom: 1px solid #e2e8f0;">`;
+                html += `<td style="padding: 12px;"><span style="background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${leave.type}</span></td>`;
+                html += `<td style="padding: 12px;">${leave.days}</td>`;
+                html += `<td style="padding: 12px;">${leave.from}</td>`;
+                html += `<td style="padding: 12px;">${leave.to}</td>`;
+                html += `<td style="padding: 12px;">${leave.reason}</td>`;
+                html += `<td style="padding: 12px;">${leave.appliedOn}</td>`;
+                html += `<td style="padding: 12px; text-align: center;"><span style="background: ${statusBg}; color: ${statusColor}; padding: 4px 12px; border-radius: 12px; font-weight: 600;">${leave.status}</span></td>`;
+                html += `</tr>`;
+            });
+            
+            html += '</tbody></table></div>';
+            approvalSection.innerHTML = html;
     </script>
     <div id="approval-section" style="margin-top: 40px; padding: 20px; border-radius: 8px; background-color: #f9f9f9;"></div>
 </body>
