@@ -278,7 +278,8 @@ showLeaveCount(); break;                case 'approveLeaves':
 		}
 		
 		function showLeavesTakenAcademicYear() {
-			const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
+			const currentUser = JSON.parse(lo
+										       }calStorage.getItem('lbs-current-user'));
 			if (!currentUser) { alert('Please login first!'); return; }
 			const historyData = getAcademicYearLeaveHistory(currentUser.email, currentUser.role, currentUser.department);
 			const approvalSection = document.getElementById('approval-section');
@@ -303,6 +304,7 @@ showLeaveCount(); break;                case 'approveLeaves':
 			html += '</div>';
 			html += '</div>';
 			approvalSection.innerHTML = html;
+		    }
 
 			function showLeaveBalance() {
 				const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
