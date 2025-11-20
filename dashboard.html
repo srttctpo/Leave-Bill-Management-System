@@ -221,8 +221,8 @@
         function handleCardClick(action) {
             switch(action) {
                 case 'applyLeave':
-showLeavesTakenAcademicYear();                    break;
-                case 'viewMyLeaves':
+showApplyLeaveForm();
+							break;case 'viewMyLeaves':
 showLeaveCount();                    break;
                 case 'viewBalance':
 showLeavesTakenAcademicYear();                    break;
@@ -304,6 +304,81 @@ showLeavesTakenAcademicYear();                    break;
 			html += '</div>';
 			html += '</div>';
 			approvalSection.innerHTML = html;
+		}
+
+							   		function showApplyLeaveForm() {
+			const user = JSON.parse(localStorage.getItem('lbs-current-user'));
+			if (!user) { alert('Please login first!'); return; }
+			const formHTML = `
+				<div style="padding: 20px; max-width: 500px;">
+					<h2 style="color: #1e40af; margin-bottom: 20px;">Apply for Leave</h2>
+					<form id="applyLeaveForm">
+						<div style="margin-bottom: 15px;">
+							<label style="display: block; margin-bottom: 5px; font-weight: bold;">Leave Type:</label>
+							<select id="leaveType" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+								<option value="">-- Select --</option>
+								<option value="CL">Casual Leave (CL)</option>
+								<option value="SL">Sick Leave (SL)</option>
+								<option value="OD">On Duty (OD)</option>
+								<option value="CO">Compensatory Off (CO)</option>
+							</select>
+						</div>
+						<div style="margin-bottom: 15px;">
+							<label style="display: block; margin-bottom: 5px; font-weight: bold;">From Date:</label>
+							<input type="date" id="fromDate" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+						</div>
+						<div style="margin-bottom: 15px;">
+							<label style="display: block; margin-bottom: 5px; font-weight: bold;">To Date:</label>
+							<input type="date" id="toDate" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+						</div>
+						<div style="margin-bottom: 15px;">
+							<label style="display: block; margin-bottom: 5px; font-weight: bold;">Reason:</label>
+							<textarea id="reason" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; height: 80px;"></textarea>
+						</div>
+					</form>
+				</div>
+			`;
+			Dialog.show('Apply Leave', formHTML, [
+				{ text: 'Submit', class: 'btn-primary', callback: () => submitLeaveApplication() },
+				{ text: 'Cancel', class: 'btn-secondary', callback: () => Dialog.hide() }
+			]);
+		}
+		
+function submitLeaveApplication() {
+			const leaveType = document.getElementById('leaveType')?.value;
+			const fromDate = document.getElementById('fromDate')?.value;
+			const toDate = document.getElementById('toDate')?.value;
+			const reason = document.getElementById('reason')?.value;
+			
+			if (!leaveType || !fromDate || !toDate || !reason) {
+				alert('Please fill all fields!');
+				return;
+			}
+			
+			const user = JSON.parse(localStorage.getItem('lbs-current-user'));
+			const leaves = JSON.parse(localStorage.getItem('lbs-leave-applications')) || [];
+			
+			const daysDiff = (new Date(toDate) - new Date(fromDate)) / (1000 * 60 * 60 * 24) + 1;
+			
+			const newLeave = {
+				applicantEmail: user.email,
+				applicantName: user.name,
+				applicantDepartment: user.department,
+				leaveType: leaveType,
+				fromDate: fromDate,
+				toDate: toDate,
+				days: daysDiff,
+				reason: reason,
+				status: 'pending',
+				appliedOn: new Date().toISOString().split('T')[0],
+				approvedOn: null
+			};
+			
+			leaves.push(newLeave);
+			localStorage.setItem('lbs-leave-applications', JSON.stringify(leaves));
+			
+			alert('Leave application submitted successfully!');
+			Dialog.hide();
 		}
     </script>
     <div id="approval-section" style="margin-top: 40px; padding: 20px; border-radius: 8px; background-color: #f9f9f9;"></div>
