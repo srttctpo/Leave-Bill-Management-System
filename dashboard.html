@@ -102,36 +102,11 @@
                 </div>
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
-        </107
-			div>
+        </div>
         
-        <div class="dashboard-cards" id="107
-			">
+        <div class="dashboard-cards" id="dashboardCards">
             <!-- Cards will be loaded dynamically based on role -->
         </div>
-			
-		<!-- Leave Expiry Marquee -->
-		<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; margin: 20px 0; border-radius: 8px; overflow: hidden;">
-			<marquee style="color: white; font-weight: bold; font-size: 16px; direction: ltr;" scrollamount="3">
-				<span id="expiryMarquee">Loading leave expiry information...</span>
-			</marquee>
-		</div>
-
-		<!-- Personal Leaves History Section -->
-		<div style="margin: 30px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-			<h3 style="color: #333; margin-bottom: 15px; border-bottom: 2px solid #667eea; padding-bottom: 10px;">📋 Leaves Taken This Academic Year</h3>
-			<div id="personalLeavesSection" style="min-height: 100px;">
-				Loading personal leave history...
-			</div>
-		</div>
-
-		<!-- Department/College Leaves Section (visible for HOD, Principal, Admin) -->
-		<div id="departmentLeavesContainer" style="display: none; margin: 30px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-			<h3 style="color: #333; margin-bottom: 15px; border-bottom: 2px solid #764ba2; padding-bottom: 10px;">🏢 <span id="departmentTitle">Department</span> Leave History</h3>
-			<div id="departmentLeavesSection" style="min-height: 100px;">
-				Loading leave history...
-			</div>
-		</div>
     </div>
 
     <script src="strings.js"></script>
@@ -156,8 +131,7 @@
             document.getElementById('userDepartment').textContent = user.department;
             
             // Load role-specific cards
-            const cardsContainer = document.getElementById('105
-														   ');
+            const cardsContainer = document.getElementById('dashboardCards');
             const cards = getCardsForRole(user.role);
             
             cards.forEach(card => {
@@ -247,14 +221,11 @@
         function handleCardClick(action) {
             switch(action) {
                 case 'applyLeave':
-showApplyLeaveForm();
-break;
-		case 'viewMyLeaves'':
-							showLeavesTakenAcademicYear();
-							break;
+showLeavesTakenAcademicYear();                    break;
+                case 'viewMyLeaves':
+showLeaveCount();                    break;
                 case 'viewBalance':
-283
-	();                    break;
+showLeavesTakenAcademicYear();                    break;
                 case 'approveLeaves':
                     showComingSoon('Approve Leaves');
                     break;
@@ -281,8 +252,7 @@ break;
             window.location.href = 'index.html';
         }
         
-		function 284
-			() {
+		function showLeaveCount() {
 			const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
 			if (!currentUser) { alert('Please login first!'); return; }
 			const approvalSection = document.getElementById('approval-section');
@@ -335,190 +305,6 @@ break;
 			html += '</div>';
 			approvalSection.innerHTML = html;
 		}
-
-							   		function showApplyLeaveForm() {
-			const user = JSON.parse(localStorage.getItem('lbs-current-user'));
-			if (!user) { alert('Please login first!'); return; }
-			const formHTML = `
-				<div style="padding: 20px; max-width: 500px;">
-					<h2 style="color: #1e40af; margin-bottom: 20px;">Apply for Leave</h2>
-					<form id="applyLeaveForm">
-						<div style="margin-bottom: 15px;">
-							<label style="display: block; margin-bottom: 5px; font-weight: bold;">Leave Type:</label>
-							<select id="leaveType" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-								<option value="">-- Select --</option>
-								<option value="CL">Casual Leave (CL)</option>
-								<option value="SL">Sick Leave (SL)</option>
-								<option value="OD">On Duty (OD)</option>
-								<option value="CO">Compensatory Off (CO)</option>
-							</select>
-						</div>
-						<div style="margin-bottom: 15px;">
-							<label style="display: block; margin-bottom: 5px; font-weight: bold;">From Date:</label>
-							<input type="date" id="fromDate" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-						</div>
-						<div style="margin-bottom: 15px;">
-							<label style="display: block; margin-bottom: 5px; font-weight: bold;">To Date:</label>
-							<input type="date" id="toDate" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-						</div>
-						<div style="margin-bottom: 15px;">
-							<label style="display: block; margin-bottom: 5px; font-weight: bold;">Reason:</label>
-							<textarea id="reason" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; height: 80px;"></textarea>
-						</div>
-					</form>
-				</div>
-			`;
-			Dialog.show('Apply Leave', formHTML, [
-				{ text: 'Submit', class: 'btn-primary', callback: () => submitLeaveApplication() },
-				{ text: 'Cancel', class: 'btn-secondary', callback: () => Dialog.hide() }
-			]);
-		}
-		
-function submitLeaveApplication() {
-			const leaveType = document.getElementById('leaveType')?.value;
-			const fromDate = document.getElementById('fromDate')?.value;
-			const toDate = document.getElementById('toDate')?.value;
-			const reason = document.getElementById('reason')?.value;
-			
-			if (!leaveType || !fromDate || !toDate || !reason) {
-				alert('Please fill all fields!');
-				return;
-			}
-			
-			const user = JSON.parse(localStorage.getItem('lbs-current-user'));
-			const leaves = JSON.parse(localStorage.getItem('lbs-leave-applications')) || [];
-			
-			const daysDiff = (new Date(toDate) - new Date(fromDate)) / (1000 * 60 * 60 * 24) + 1;
-			
-			const newLeave = {
-				applicantEmail: user.email,
-				applicantName: user.name,
-				applicantDepartment: user.department,
-				leaveType: leaveType,
-				fromDate: fromDate,
-				toDate: toDate,
-				days: daysDiff,
-				reason: reason,
-				status: 'pending',
-				appliedOn: new Date().toISOString().split('T')[0],
-				approvedOn: null
-			};
-			
-			leaves.push(newLeave);
-			localStorage.setItem('lbs-leave-applications', JSON.stringify(leaves));
-			
-			alert('Leave application submitted successfully!');
-			Dialog.hide();
-		}
-		
-		// Function to show leave expiry marquee
-		function showExpiryMarquee() {
-			const user = JSON.parse(localStorage.getItem('lbs-current-user'));
-			const leaveBalance = user.leaveBalance || {};
-			const today = new Date();
-			const academicYearEnd = new Date(today.getFullYear(), 3, 30); // Academic year ends on April 30
-			
-			let expiringLeaves = [];
-			const daysUntilExpiry = 15;
-			
-			for (const [leaveType, balance] of Object.entries(leaveBalance)) {
-				if (leaveType === 'LWP' || balance === 0) continue;
-				const daysRemaining = Math.ceil((academicYearEnd - today) / (1000 * 60 * 60 * 24));
-				if (daysRemaining > 0 && daysRemaining <= daysUntilExpiry) {
-					expiringLeaves.push(`${leaveType}: ${balance} days expiring in ${daysRemaining} days`);
-				}
-			}
-			
-			const marqueeText = expiringLeaves.length > 0 
-				? expiringLeaves.join(' | ') + ' | ' + expiringLeaves.join(' | ')
-				: '✓ No leaves expiring in the next 15 days';
-			
-			document.getElementById('expiryMarquee').textContent = marqueeText;
-		}
-
-		// Function to show personal leaves history
-		function showPersonalLeavesHistory() {
-			const user = JSON.parse(localStorage.getItem('lbs-current-user'));
-			const leavesData = JSON.parse(localStorage.getItem('lbs-leave-applications')) || [];
-			
-			const userLeaves = leavesData.filter(leave => leave.applicantEmail === user.email);
-			
-			if (userLeaves.length === 0) {
-				document.getElementById('personalLeavesSection').innerHTML = '<p style="color: #666; text-align: center;">No leaves taken yet in this academic year</p>';
-				return;
-			}
-			
-			let html = '<table style="width: 100%; border-collapse: collapse;">';
-			html += '<tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;"><th style="padding: 10px; text-align: left;">Leave Type</th><th style="padding: 10px; text-align: left;">From Date</th><th style="padding: 10px; text-align: left;">To Date</th><th style="padding: 10px; text-align: left;">Days</th><th style="padding: 10px; text-align: left;">Status</th></tr>';
-			
-			userLeaves.forEach(leave => {
-				const statusColor = leave.status === 'approved' ? '#4caf50' : leave.status === 'rejected' ? '#f44336' : '#ff9800';
-				html += `<tr style="border-bottom: 1px solid #ddd;">`;
-				html += `<td style="padding: 10px;">${leave.leaveType}</td>`;
-				html += `<td style="padding: 10px;">${leave.fromDate}</td>`;
-				html += `<td style="padding: 10px;">${leave.toDate}</td>`;
-				html += `<td style="padding: 10px;">${leave.days}</td>`;
-				html += `<td style="padding: 10px; color: ${statusColor}; font-weight: bold;">${leave.status.toUpperCase()}</td>`;
-				html += `</tr>`;
-			});
-			
-			html += '</table>';
-			document.getElementById('personalLeavesSection').innerHTML = html;
-		}
-
-		// Function to show department/college leaves history
-		function showDepartmentLeavesHistory() {
-			const user = JSON.parse(localStorage.getItem('lbs-current-user'));
-			const leavesData = JSON.parse(localStorage.getItem('lbs-leave-applications')) || [];
-			
-			let filteredLeaves = [];
-			let title = 'Department';
-			
-			if (user.role === 'HOD') {
-				// Show all leaves for the user's department
-				filteredLeaves = leavesData.filter(leave => {
-					const applicant = JSON.parse(localStorage.getItem('lbs-users')).find(u => u.email === leave.applicantEmail);
-					return applicant && applicant.department === user.department;
-				});
-				title = `${user.department} Department`;
-				document.getElementById('departmentLeavesContainer').style.display = 'block';
-			} else if (user.role === 'Principal' || user.role === 'Admin') {
-				// Show all leaves for the entire college
-				filteredLeaves = leavesData;
-				title = 'College';
-				document.getElementById('departmentLeavesContainer').style.display = 'block';
-			}
-			
-			document.getElementById('departmentTitle').textContent = title;
-			
-			if (filteredLeaves.length === 0) {
-				document.getElementById('departmentLeavesSection').innerHTML = '<p style="color: #666; text-align: center;">No leave records available</p>';
-				return;
-			}
-			
-			let html = '<table style="width: 100%; border-collapse: collapse;">';
-			html += '<tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;"><th style="padding: 10px; text-align: left;">Employee</th><th style="padding: 10px; text-align: left;">Leave Type</th><th style="padding: 10px; text-align: left;">From Date</th><th style="padding: 10px; text-align: left;">To Date</th><th style="padding: 10px; text-align: left;">Days</th><th style="padding: 10px; text-align: left;">Status</th></tr>';
-			
-			filteredLeaves.forEach(leave => {
-				const statusColor = leave.status === 'approved' ? '#4caf50' : leave.status === 'rejected' ? '#f44336' : '#ff9800';
-				html += `<tr style="border-bottom: 1px solid #ddd;">`;
-				html += `<td style="padding: 10px;">${leave.applicantName || leave.applicantEmail}</td>`;
-				html += `<td style="padding: 10px;">${leave.leaveType}</td>`;
-				html += `<td style="padding: 10px;">${leave.fromDate}</td>`;
-				html += `<td style="padding: 10px;">${leave.toDate}</td>`;
-				html += `<td style="padding: 10px;">${leave.days}</td>`;
-				html += `<td style="padding: 10px; color: ${statusColor}; font-weight: bold;">${leave.status.toUpperCase()}</td>`;
-				html += `</tr>`;
-			});
-			
-			html += '</table>';
-			document.getElementById('departmentLeavesSection').innerHTML = html;
-		}
-
-		// Call these functions when dashboard loads
-		showExpiryMarquee();
-		showPersonalLeavesHistory();
-		showDepartmentLeavesHistory();
     </script>
     <div id="approval-section" style="margin-top: 40px; padding: 20px; border-radius: 8px; background-color: #f9f9f9;"></div>
 </body>
