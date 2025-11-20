@@ -225,7 +225,7 @@ showLeavesTakenAcademicYear();                    break;
                 case 'viewMyLeaves':
 showLeaveCount();                    break;
                 case 'viewBalance':
-showLeavesTakenAcademicYear();                    break;
+showLeaveBalance();                    break;
                 case 'approveLeaves':
                     showComingSoon('Approve Leaves');
                     break;
@@ -304,6 +304,29 @@ showLeavesTakenAcademicYear();                    break;
 			html += '</div>';
 			html += '</div>';
 			approvalSection.innerHTML = html;
+
+			function showLeaveBalance() {
+				const currentUser = JSON.parse(localStorage.getItem('lbs-current-user'));
+				if (!currentUser) { alert('Please login first!'); return; }
+				const approvalSection = document.getElementById('approval-section');
+				const user = JSON.parse(localStorage.getItem('lbs-users')).find(u => u.email === currentUser.email);
+				let html = '<div style="max-width: 1000px; margin: 20px 0; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">';
+				html += '<h3 style="color: #1e40af; margin-bottom: 20px;">\ud83d\udccb Leave Balance</h3>';
+				html += '<div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">';
+				const leaveTypes = ['CL', 'SL', 'OD', 'CO', 'LWP'];
+				leaveTypes.forEach(type => {
+					const total = (user && user.leaveBalance && user.leaveBalance[type]) || 0;
+					const used = (user && user.leaveUsed && user.leaveUsed[type]) || 0;
+					const pending = (user && user.leavePending && user.leavePending[type]) || 0;
+					const available = Math.max(0, total - used - pending);
+					let color = '#3b82f6'; if (type === 'LWP') color = '#dc2626';
+					html += `<div style=\"padding: 12px 16px; background: #f9fafb; border: 2px solid ${color}; border-radius: 6px; font-size: 14px; font-weight: 500;\">`;
+					html += `<span style=\"color: ${color}; font-weight: bold;\">${type}:</span> <strong>${available}</strong> available`;
+					html += `</div>`;
+					});
+				html += '</div></div>';
+				approvalSection.innerHTML = html;
+				}
 		}
     </script>
     <div id="approval-section" style="margin-top: 40px; padding: 20px; border-radius: 8px; background-color: #f9f9f9;"></div>
