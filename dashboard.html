@@ -368,6 +368,11 @@ showLeaveCount(); break;                case 'approveLeaves':
             
             html += '</tbody></table></div>';
             approvalSection.innerHTML = html;
+
+				    function logout() {
+        localStorage.removeItem('lbs-current-user');
+        window.location.href = 'index.html';
+    }
     </script>
     <div id="approval-section" style="margin-top: 40px; padding: 20px; border-radius: 8px; background-color: #f9f9f9;"></div>
 </body>
