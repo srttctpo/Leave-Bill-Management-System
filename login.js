@@ -101,6 +101,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
             }
+             
+ // Determine approver based on role
+ let approverEmail = null;
+
+ if (role === 'Individual') {
+ const hod = users.find(u => u.role === 'HOD' && u.department === department && u.status === 'approved');
+ approverEmail = hod ? hod.email : null;
+ } else if (role === 'HOD') {
+ const principal = users.find(u => u.role === 'Principal' && u.status === 'approved');
+ approverEmail = principal ? principal.email : null;
+ } else if (role === 'Principal') {
+ const admin = users.find(u => u.role === 'Admin');
+ approverEmail = admin ? admin.email : null;
+ }
+
             
             users.push({
                 email,
@@ -109,7 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 department,
                 name,
                 joinDate: join,
-                status: 'pending'
+                status: 'pending',
+                  approver: approverEmail,
+                  leaveBalance: {CL:0, OD:0, CO:0, SL:0, LWP:0}
             });
             
             localStorage.setItem('lbs-users', JSON.stringify(users));
